@@ -1,0 +1,478 @@
+{
+  "wxwork": {
+    "package": "com.qq.weixin.work.deepin",
+    "description": "企业微信，办公沟通、会议协作、文件传输"
+  },
+  "wechat": {
+    "package": "com.qq.weixin.tools.deepin",
+    "description": "微信 PC 版，社交聊天、朋友圈、小程序支持"
+  },
+  "netease": {
+    "package": "com.163.music.deepin",
+    "description": "网易云音乐，听歌、歌单管理、无损音质播放"
+  },
+  "douyin": {
+    "package": "com.douyin.deepin",
+    "description": "抖音 PC 版，短视频浏览、直播观看、视频创作"
+  },
+  "qianniu": {
+    "package": "com.taobao.work.deepin",
+    "description": "千牛工作台，电商订单管理、客户沟通、店铺运营"
+  },
+  "wemeet": {
+    "package": "com.tencent.meeting.deepin",
+    "description": "腾讯会议，高清视频会议、屏幕共享、会议录制"
+  },
+  "foxmail": {
+    "package": "com.foxmail.deepin",
+    "description": "腾讯 Foxmail，多账户邮件管理、附件预览、邮件分类"
+  },
+  "jianying": {
+    "package": "com.ulikecam.jianying.deepin",
+    "description": "剪映专业版，视频剪辑、特效添加、字幕生成、一键导出"
+  },
+  "quark": {
+    "package": "cn.quark.pan.deepin",
+    "description": "夸克网盘，云存储、文件同步、在线预览"
+  },
+  "wiz": {
+    "package": "cn.wiz.deepin",
+    "description": "为知笔记重构版，全新设计，更加美观和流畅"
+  },
+  "evernote": {
+    "package": "com.evernote.deepin",
+    "description": "印象笔记，笔记管理、同步、多平台支持"
+  },
+  "siyuan": {
+    "package": "com.siyuan.deepin",
+    "description": "思源笔记，本地优先的知识管理系统，支持双向链接"
+  },
+  "xunlei": {
+    "package": "com.xunlei.deepin",
+    "description": "迅雷 PC 版，高速下载、资源搜索、批量下载"
+  },
+  "haozip": {
+    "package": "com.2345haozip.deepin",
+    "description": "2345 好压，压缩解压工具，支持多种格式"
+  },
+  "fastcopy": {
+    "package": "com.fastcopy.deepin",
+    "description": "FastCopy，高速文件复制工具，支持断点续传、批量操作"
+  },
+  "uninstalltool": {
+    "package": "com.uninstalltool.deepin",
+    "description": "强力卸载工具，彻底删除软件及残留文件"
+  },
+  "iobit": {
+    "package": "com.iobituninstaller.deepin",
+    "description": "IObit 卸载工具，软件卸载、残留清理、启动项管理"
+  },
+  "winmerge": {
+    "package": "com.winmerge.deepin",
+    "description": "WinMerge，文件/文件夹对比工具，文本差异对比、合并"
+  },
+  "processlasso": {
+    "package": "com.processlasso.deepin",
+    "description": "Process Lasso，进程管理工具，优化 CPU 占用、限制进程优先级"
+  },
+  "snap": {
+    "package": "com.ashampoosnap.deepin",
+    "description": "Ashampoo Snap，截图工具，支持编辑、标注、分享"
+  },
+  "faststone": {
+    "package": "com.faststonecapture.deepin",
+    "description": "FastStone Capture，截图+录屏工具，支持图片编辑"
+  },
+  "qingying": {
+    "package": "com.qingyingluping.deepin",
+    "description": "轻映录屏，屏幕录制、麦克风收音、视频导出"
+  },
+  "wangying": {
+    "package": "com.wangyinglupin.deepin",
+    "description": "旺影录屏，高清录屏、直播推流辅助工具"
+  },
+  "feisi": {
+    "package": "com.feisirec.deepin",
+    "description": "飞思录屏专家，专业录屏工具，支持多区域录制"
+  },
+  "berry": {
+    "package": "com.berryrec.deepin",
+    "description": "浆果录屏，简单易用的屏幕录制工具"
+  },
+  "bandicam": {
+    "package": "com.bandicam.deepin",
+    "description": "班迪录屏，高清屏幕录制、游戏录制、视频剪辑"
+  },
+  "qve": {
+    "package": "com.qverecotder.deepin",
+    "description": "QVE 屏幕录制，轻量级录屏工具，支持自定义分辨率"
+  },
+  "video-converter": {
+    "package": "com.aiseesoft.video-converter-ultimate.deepin",
+    "description": "视频转换大师，AI 转换、编辑和压缩多种视频格式"
+  },
+  "formatfactory": {
+    "package": "com.pcfreetime.formatfactory.deepin",
+    "description": "格式工厂，音视频/图片格式转换、文件压缩、剪辑合并"
+  },
+  "xilisoft": {
+    "package": "com.xilisoftvideo.deepin",
+    "description": "曦力视频转换器，高清视频格式转换、剪辑、压缩"
+  },
+  "hdvideo": {
+    "package": "com.hdvideoconverterfactorypro.deepin",
+    "description": "HD 视频转换工厂，4K/1080P 视频格式互转、画质优化"
+  },
+  "qingyingshipin": {
+    "package": "com.qingyingshipin.deepin",
+    "description": "轻映视频转换器，音视频格式转换、批量处理"
+  },
+  "lettvideo": {
+    "package": "com.lettvideoconverter.deepin",
+    "description": "乐涂涂视频转换器，简单易用的视频格式转换工具"
+  },
+  "chaoneng": {
+    "package": "com.chaonengshipin.deepin",
+    "description": "超能视频转换，快速转换主流音视频格式"
+  },
+  "fengyun": {
+    "package": "com.fengyunvideo.deepin",
+    "description": "风云视频剪辑王，视频剪辑、合并、特效添加"
+  },
+  "xjvideo": {
+    "package": "com.xjvideocut.deepin",
+    "description": "迅捷视频剪切工具，高速无损剪切、合并视频"
+  },
+  "videopad": {
+    "package": "com.videopadvideoeditor.deepin",
+    "description": "VideoPad 视频编辑器，基础视频剪辑、转场特效"
+  },
+  "douyinqushuiyin": {
+    "package": "com.douyinqushuiyin.deepin",
+    "description": "抖音视频去水印工具，一键去除视频水印"
+  },
+  "tutu": {
+    "package": "com.tutuqushuiyin.deepin",
+    "description": "图图去水印软件，去除图片/视频水印、划痕"
+  },
+  "inpaint": {
+    "package": "com.inpaintportable.deepin",
+    "description": "图片去水印工具，去除杂物、修复图片瑕疵"
+  },
+  "meitu": {
+    "package": "com.meituxiuxiu.deepin",
+    "description": "美图秀秀，图片美化、抠图、滤镜、拼图"
+  },
+  "fotor": {
+    "package": "com.fotor.deepin",
+    "description": "泼辣修图，HDR 影像后期处理、专业调色工具"
+  },
+  "hiimage": {
+    "package": "com.hiimagematting.deepin",
+    "description": "嗨格式抠图大师，AI 智能抠图、背景替换、证件照换底色"
+  },
+  "matting": {
+    "package": "com.mattingassistant.deepin",
+    "description": "风速智能抠图助手，批量抠图、背景去除"
+  },
+  "xiangsu": {
+    "package": "com.xiangsu.deepin",
+    "description": "像素蛋糕，商业级 AI 修图、人像美化、批量同步"
+  },
+  "graphicsgale": {
+    "package": "com.graphicsgale.deepin",
+    "description": "像素画制作工具，支持多图层、GIF 动画导出"
+  },
+  "haozhaopian": {
+    "package": "com.haozhaopian.deepin",
+    "description": "好照片 HDR 修图工具，提升照片光影效果"
+  },
+  "nomacs": {
+    "package": "com.nomacs.deepin",
+    "description": "Nomacs 图片查看器，高速打开、支持多种格式"
+  },
+  "xnview": {
+    "package": "com.xnview.deepin",
+    "description": "XnView 图片查看器，批量图片管理、格式转换"
+  },
+  "xnviewmp": {
+    "package": "com.xnviewmp.deepin",
+    "description": "XnView MP，专业图片浏览器、编辑器"
+  },
+  "fengyunpic": {
+    "package": "com.fengyunpicconvector.deepin",
+    "description": "风云图片格式转换器，批量转换图片格式"
+  },
+  "myimg": {
+    "package": "com.myimgconverter.deepin",
+    "description": "图片格式转换器，支持百余种图片格式互转"
+  },
+  "lightimage": {
+    "package": "com.lightimagerezizer.deepin",
+    "description": "图片批量处理工具，压缩、加水印、格式转换"
+  },
+  "tuya": {
+    "package": "com.tuya.deepin",
+    "description": "简易图片压缩工具，快速压缩图片体积"
+  },
+  "ticompressor": {
+    "package": "com.ticompressor.deepin",
+    "description": "开源图片压缩工具，无损压缩图片"
+  },
+  "pixzip": {
+    "package": "fun.xiangsu.pixziplite.deepin",
+    "description": "像素压缩工具，快速压缩图片，保持清晰度"
+  },
+  "firstpic": {
+    "package": "com.firstpiccompress.deepin",
+    "description": "图片批量压缩工具，支持自定义分辨率"
+  },
+  "formathor": {
+    "package": "com.gilisoft.formathor.deepin",
+    "description": "PDF 转换软件，PDF 与其他文档格式互转"
+  },
+  "solidpdf": {
+    "package": "com.solidconverterpdf.deepin",
+    "description": "Solid Converter PDF，PDF 转换为 Word/Excel/PPT"
+  },
+  "xunjiepdf": {
+    "package": "com.xunjiepdf.deepin",
+    "description": "迅捷 PDF 转换器，PDF 与 Word/Excel/PPT 互转"
+  },
+  "geekerpdf": {
+    "package": "cn.geekersoft.geekerpdfconverter.deepin",
+    "description": "极客 PDF 转换器，PDF 与多格式互转、合并、压缩"
+  },
+  "pdfmao": {
+    "package": "com.pdfmao.converter.deepin",
+    "description": "PDF 猫转换器，PDF 转 Word/Excel/CAD 等格式"
+  },
+  "pdfxchange": {
+    "package": "com.pdfxchangeeditorplus.deepin",
+    "description": "PDF-XChange 编辑器，专业 PDF 编辑、注释、签名"
+  },
+  "jisupdf": {
+    "package": "com.jisupdfeditor.deepin",
+    "description": "极速 PDF 编辑器，简单易用的 PDF 编辑工具"
+  },
+  "xunfengpdf": {
+    "package": "com.xunfengpdf.deepin",
+    "description": "旋风 PDF 编辑器，PDF 内容编辑、格式调整"
+  },
+  "zhuanzhuanpdf": {
+    "package": "com.zhuanzhuanpdf.deepin",
+    "description": "转转大师 PDF 编辑器，PDF 编辑、合并、拆分"
+  },
+  "pdfhebing": {
+    "package": "com.pdfhebingfengezhushou.deepin",
+    "description": "PDF 合并分割助手，批量合并/拆分 PDF 文件"
+  },
+  "pdfcross": {
+    "package": "com.pdfcrossmerge.deepin",
+    "description": "PDF 交叉合并工具，适合扫描件正反面合并"
+  },
+  "lengguangpdf": {
+    "package": "com.lengguangpdf.deepin",
+    "description": "冷光 PDF 工具箱，添加/去除水印、格式转换"
+  },
+  "pdftool": {
+    "package": "com.pdftool.deepin",
+    "description": "免费 PDF 工具，合并、拆分、转图片、批量打印"
+  },
+  "fastimg2pdf": {
+    "package": "com.fastimg2pdf.deepin",
+    "description": "快速图片转 PDF 工具，批量转换图片为 PDF"
+  },
+  "imageconvertpdf": {
+    "package": "com.imageconvertpdf.deepin",
+    "description": "图片转 PDF 工具，支持自定义页码、分辨率"
+  },
+  "freepic2pdf": {
+    "package": "com.freepic2pdf.deepin",
+    "description": "FreePic2Pdf，免费图片转 PDF 工具"
+  },
+  "caj2pdf": {
+    "package": "com.caj2pdf.deepin",
+    "description": "CAJ 转 PDF 工具，免费转换知网 CAJ 文档"
+  },
+  "xunjiecaj": {
+    "package": "com.xunjiecajconverter.deepin",
+    "description": "迅捷 CAJ 转换器，CAJ 与 PDF/Word 互转"
+  },
+  "officeimages": {
+    "package": "com.officefilestoimages.deepin",
+    "description": "Office 图片提取工具，批量导出 Word/Excel/PPT 中的图片"
+  },
+  "wps": {
+    "package": "cn.com.k51.wpsoffice.deepin",
+    "description": "WPS 办公套件，兼容 Word/Excel/PPT 格式"
+  },
+  "word2007": {
+    "package": "cn.com.k51.word2007.deepin",
+    "description": "Microsoft Word 2007，文档编辑、格式排版、模板套用"
+  },
+  "word2003": {
+    "package": "cn.com.k51.word2003.deepin",
+    "description": "Microsoft Word 2003，基础文档处理，适配低配置环境"
+  },
+  "excel2007": {
+    "package": "cn.com.k51.excel2007.deepin",
+    "description": "Microsoft Excel 2007，数据统计、公式计算、图表生成"
+  },
+  "excel2003": {
+    "package": "cn.com.k51.excel2003.deepin",
+    "description": "Microsoft Excel 2003，基础表格制作、数据排序筛选"
+  },
+  "ppt2007": {
+    "package": "cn.com.k51.powerpoint2007.deepin",
+    "description": "Microsoft PowerPoint 2007，幻灯片制作、动画特效、演示播放"
+  },
+  "ppt2003": {
+    "package": "cn.com.k51.powerpoint2003.deepin",
+    "description": "Microsoft PowerPoint 2003，基础演示文稿制作"
+  },
+  "openoffice": {
+    "package": "com.openoffice.deepin",
+    "description": "开源办公套件，替代 Office，支持跨平台格式兼容"
+  },
+  "lingxi": {
+    "package": "com.163.lingxioffice.deepin",
+    "description": "网易灵犀办公，邮件协同、云文档、日历管理"
+  },
+  "excel": {
+    "package": "com.excel.deepin",
+    "description": "批量 Excel 复制填充工具，自动生成个性化表格文档"
+  },
+  "excelhedui": {
+    "package": "com.excelheduizhushou.deepin",
+    "description": "Excel 数据核对工具，快速匹配表格数据差异"
+  },
+  "biaoge": {
+    "package": "com.biaogegongjuxiang.deepin",
+    "description": "Excel 表格处理工具，批量编辑、格式转换"
+  },
+  "endnote": {
+    "package": "com.endnote.deepin",
+    "description": "文献管理软件，学术论文引用、参考文献整理"
+  },
+  "zhuanyinxia": {
+    "package": "com.zhuanyinxia.deepin",
+    "description": "转印侠，打印辅助工具"
+  },
+  "zhuanzhuandashi": {
+    "package": "com.zhuanzhuandashi.deepin",
+    "description": "转转大师，文件格式转换辅助工具"
+  },
+  "zuoyebang": {
+    "package": "com.zuoyebang.deepin",
+    "description": "作业帮直播课，中小学课程学习、作业辅导"
+  },
+  "xueersi": {
+    "package": "com.xueersipeiyou.deepin",
+    "description": "学而思培优，中小学课外辅导、在线课程"
+  },
+  "codemao": {
+    "package": "cn.codemao.pc.deepin",
+    "description": "编程猫在线，图形化/Python 编程课程、少儿编程学习"
+  },
+  "cm-online": {
+    "package": "com.cm.online.pc.deepin",
+    "description": "编程猫在线 PC 版，同步学习编程课程"
+  },
+  "sts": {
+    "package": "cn.org.sts.deepin",
+    "description": "国家科技统计在线调查平台客户端"
+  },
+  "yaokaobiguo": {
+    "package": "com.yaokaobiguo.deepin",
+    "description": "驾考宝典，驾照考试题库、模拟考试"
+  },
+  "jiakaobao": {
+    "package": "com.jiakaobaodian.deepin",
+    "description": "驾考宝典 PC 版，科目一/四题库练习"
+  },
+  "alimail": {
+    "package": "com.alimail.deepin",
+    "description": "阿里邮箱，企业邮箱客户端"
+  },
+  "flashmail": {
+    "package": "com.flashmail.deepin",
+    "description": "网易闪电邮，多账户邮件管理工具"
+  },
+  "sogou": {
+    "package": "com.sogou.ime.ng.fcitx5.deepin",
+    "description": "搜狗输入法 for Linux，中文输入辅助工具"
+  },
+  "aliim": {
+    "package": "com.aliim.deepin",
+    "description": "阿里旺旺买家版，电商购物沟通工具"
+  },
+  "ailiwangwang": {
+    "package": "com.ailiwangwangbuy.deepin",
+    "description": "阿里旺旺买家版，淘宝购物聊天工具"
+  },
+  "feiq": {
+    "package": "com.feiq.deepin",
+    "description": "飞秋，局域网即时通讯工具"
+  },
+  "fanyi": {
+    "package": "com.fanyi.deepin",
+    "description": "有道翻译，多语言翻译工具"
+  },
+  "youdao": {
+    "package": "com.youdao.dict.deepin",
+    "description": "有道词典，英语学习、单词查询、例句翻译"
+  },
+  "pvz": {
+    "package": "com.popcap.plantsvszombies.deepin",
+    "description": "植物大战僵尸，经典塔防游戏"
+  },
+  "juzhang": {
+    "package": "com.juzhangdaren.deepin",
+    "description": "菊长大人版植物大战僵尸，卡通风格修改版"
+  },
+  "pvzbt": {
+    "package": "com.pvzbt.deepin",
+    "description": "植物大战僵尸 BT 版，趣味改版游戏"
+  },
+  "feeding": {
+    "package": "com.feeding.deepin",
+    "description": "大鱼吃小鱼，经典休闲小游戏"
+  },
+  "algodoo": {
+    "package": "com.algodoo.deepin",
+    "description": "Algodoo 物理模拟实验程序，趣味物理实验工具"
+  },
+  "xyq": {
+    "package": "com.xyq.163.deepin",
+    "description": "梦幻西游，经典回合制网游"
+  },
+  "bubaichuanshuo": {
+    "package": "com.bubaichuanshuo.deepin",
+    "description": "不败传说，角色扮演类网游"
+  },
+  "guiguwushuang": {
+    "package": "com.guiguwushuang.deepin",
+    "description": "鬼谷无双，MMORPG 网游"
+  },
+  "ludingji": {
+    "package": "com.ludingji.deepin",
+    "description": "鹿鼎记，武侠题材网游"
+  },
+  "gotvg": {
+    "package": "com.gotvg.deepin",
+    "description": "游聚街机平台，经典街机游戏联机平台"
+  },
+  "wangyiyunyouxi": {
+    "package": "com.wangyiyunyouxi.deepin",
+    "description": "网易云游戏，云游戏平台，免下载玩正版游戏"
+  },
+  "wanmei": {
+    "package": "com.wanmei.deepin",
+    "description": "完美游戏平台，完美世界旗下游戏启动器"
+  },
+  "360yxzs": {
+    "package": "com.360.yxzs.deepin",
+    "description": "360 手游助手，安卓手游电脑端模拟器"
+  }
+}

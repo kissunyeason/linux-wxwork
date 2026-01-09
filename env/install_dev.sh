@@ -25,5 +25,5 @@ apt-get install -y --no-install-recommends \
     psmisc \
     fuse \
     libharfbuzz0b \
-    jq \
+    jq 
 

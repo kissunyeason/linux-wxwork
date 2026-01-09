@@ -18,10 +18,6 @@ RUN bash /tmp/install_dev.sh
 
 RUN bash /tmp/install_graphics.sh
 
-RUN bash /tmp/install_wine.sh   
-
-RUN bash /tmp/install_wxwork.sh
-
 RUN rm -rf /tmp/* && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/cache/apt/* && \
