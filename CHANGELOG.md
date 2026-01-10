@@ -2,6 +2,42 @@
 
 本文档遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 规范。
 
+## [v2.0.2] - 2026-01-10
+
+### Added
+- **版本安装功能**：支持通过版本参数安装特定版本的应用
+  - `./tools/run.sh install wxwork -v v4` - 安装指定版本的应用
+  - `./tools/run.sh wxwork -v v4` - 运行应用时如果未安装则安装指定版本
+  - 版本映射存储在 `mapping.json` 中，支持为每个应用配置多个版本
+- **Docker 安装脚本**：新增 `tools/lib/install_docker.sh` 脚本
+  - 自动检测系统架构（amd64/arm64）
+  - 使用阿里云镜像源加速下载
+  - 自动将用户添加到 docker 组
+- **Docker 自动安装**：检测到系统未安装 Docker 时自动安装
+  - 在 `setup.sh` 和 `functions.bash` 中集成自动安装逻辑
+  - 使用项目提供的 `install_docker.sh` 脚本进行安装
+  - 需要 root 权限时会提示用户使用 sudo
+
+### Changed
+- **安装逻辑优化**：支持从指定 URL 下载并安装 deb 包
+  - 当指定版本时，从映射表获取对应的 deb 包 URL
+  - 使用 wget 下载并安装，支持自定义 User-Agent
+  - 自动处理依赖关系
+- **Docker 检查逻辑**：优化 Docker 环境检查流程
+  - 在 `ensure_docker_environment()` 中先检查并安装 Docker
+  - 移除回退到官方安装脚本的逻辑，只使用项目提供的安装脚本
+
+### Fixed
+- 修复 `install_docker.sh` 脚本的路径引用问题
+- 修复版本参数解析逻辑，支持 `-v` 和 `--version` 参数
+
+### Technical Improvements
+- 在 `functions.bash` 中添加 `get_version_url()` 函数，统一管理版本映射读取
+- 优化参数解析逻辑，支持在运行应用时指定安装版本
+- 改进 Docker 安装脚本的路径查找逻辑
+
+---
+
 ## [v2.0.1] - 2026-01-10
 
 ### Changed

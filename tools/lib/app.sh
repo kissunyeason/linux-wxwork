@@ -50,6 +50,7 @@ install_wine_environment() {
 install_app_in_container() {
     local package="$1"
     local short_name="$2"
+    local version="${3:-}"
     
     log_info "在容器内安装应用: ${package}"
     
@@ -60,8 +61,14 @@ install_app_in_container() {
     log_info "更新软件包列表..."
     docker exec "$CONTAINER_NAME" apt update >/dev/null 2>&1 || log_warning "apt update 失败，继续尝试安装"
     
+    # 构建安装命令参数
+    local install_args=("bash" "/workspace/tools/lib/app.sh" "install" "$package" "$short_name")
+    if [[ -n "$version" ]]; then
+        install_args+=("-v" "$version")
+    fi
+    
     # 直接使用 volume 挂载的脚本
-    docker exec "$CONTAINER_NAME" bash /workspace/tools/lib/app.sh install "$package" "$short_name" || {
+    docker exec "$CONTAINER_NAME" "${install_args[@]}" || {
         log_error "应用安装失败"
         return 1
     }
@@ -71,10 +78,22 @@ install_app_in_container() {
 install_app() {
     local package="$1"
     local short_name="$2"
+    local version="${3:-}"
+    local version_url=""
+    
+    # 如果指定了版本，获取版本 URL
+    if [[ -n "$version" ]]; then
+        version_url=$(get_version_url "$short_name" "$version")
+        if [[ -z "$version_url" ]]; then
+            log_error "未找到应用 ${short_name} 的版本 ${version} 的下载地址"
+            return 1
+        fi
+        log_info "使用版本 ${version} 安装: ${version_url}"
+    fi
     
     # 如果不在容器内，且容器正在运行，则在容器内安装
     if ! is_in_container && is_container_running; then
-        install_app_in_container "$package" "$short_name"
+        install_app_in_container "$package" "$short_name" "$version"
         return $?
     fi
     
@@ -86,33 +105,120 @@ install_app() {
         return 0
     fi
     
-    # 更新 apt 源
-    log_info "更新软件包列表..."
-    sudo apt update || {
-        log_error "apt update 失败"
-        return 1
-    }
-    
-    # 安装应用
-    log_info "正在安装 ${package}..."
-    if sudo apt install -y "$package"; then
-        log_success "应用安装成功: ${package}"
+    # 如果提供了版本 URL，使用 deb 包安装
+    if [[ -n "$version_url" ]]; then
+        log_info "使用指定版本安装: ${version_url}"
         
-        # 创建 wrapper
-        create_wrapper "$short_name" "$package" || log_warning "创建 wrapper 失败，但应用已安装"
+        # 确保 wget 可用
+        ensure_command wget
         
-        # 提示用户
-        echo ""
-        log_success "${package} 已安装，可通过以下命令启动:"
-        echo -e "  ${GREEN}./tools/run.sh ${short_name}${NC}"
-        if is_in_container; then
-            echo -e "  或直接运行: ${GREEN}${short_name}${NC}"
+        # 创建临时目录
+        local temp_dir
+        temp_dir=$(mktemp -d)
+        local deb_file="${temp_dir}/$(basename "$version_url")"
+        
+        # 下载 deb 包
+        log_info "正在下载 deb 包..."
+        if wget -U 'Debian APT-HTTP/1.3 (2.9.17)' -O "$deb_file" "$version_url"; then
+            log_success "deb 包下载成功"
         else
-            echo -e "  或在容器内运行: ${GREEN}docker exec -it wine_container ${short_name}${NC}"
+            log_error "deb 包下载失败"
+            rm -rf "$temp_dir"
+            return 1
         fi
+        
+        # 安装 deb 包
+        log_info "正在安装 deb 包..."
+        
+        # 先安装 deb 包（可能会因为依赖问题失败，这是正常的）
+        sudo dpkg -i "$deb_file" 2>&1 || true
+        
+        # 检查是否因为依赖问题安装失败
+        if ! dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q "install ok installed"; then
+            log_info "检测到依赖问题，正在安装缺失的依赖包..."
+            
+            # 获取缺失的依赖列表
+            local missing_deps
+            missing_deps=$(dpkg -I "$deb_file" | grep -A 50 "Depends:" | grep "Depends:" | sed 's/Depends://g' | tr ',' '\n' | sed 's/(.*)//g' | xargs)
+            
+            if [[ -n "$missing_deps" ]]; then
+                log_info "缺失的依赖: $missing_deps"
+                
+                # 更新软件包列表
+                sudo apt update -qq || log_warning "apt update 失败"
+                
+                # 只安装缺失的依赖包，不使用 apt install -f（避免升级主包）
+                log_info "正在安装依赖包..."
+                if sudo apt install -y $missing_deps 2>&1 | grep -v "WARNING"; then
+                    log_info "依赖包安装成功"
+                else
+                    log_warning "部分依赖包安装失败，尝试使用 apt install -f"
+                fi
+            fi
+            
+            # 重新尝试配置已安装的包
+            log_info "重新配置软件包..."
+            if sudo dpkg --configure "$package" 2>&1 || sudo dpkg -i "$deb_file" 2>&1; then
+                log_info "软件包配置成功"
+            else
+                log_warning "dpkg 配置失败，尝试最后的依赖修复..."
+                # 最后手段：使用 apt install -f，但先锁定版本
+                sudo apt-mark hold "$package" 2>/dev/null || true
+                sudo apt install -f -y 2>&1 || true
+                sudo apt-mark unhold "$package" 2>/dev/null || true
+            fi
+        fi
+        
+        # 验证安装是否成功
+        if dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q "install ok installed"; then
+            # 获取实际安装的版本
+            local installed_version
+            installed_version=$(dpkg-query -W -f='${Version}' "$package" 2>/dev/null)
+            log_success "应用安装成功: ${package} (版本: ${installed_version})"
+            
+            # 验证版本
+            if [[ "$installed_version" == *"4."* ]]; then
+                log_success "已成功安装指定的 v4 版本"
+            elif [[ "$installed_version" == *"5."* ]]; then
+                log_warning "警告：安装的是 v5 版本，不是期望的 v4 版本"
+            fi
+        else
+            log_error "deb 包安装失败"
+            rm -rf "$temp_dir"
+            return 1
+        fi
+        
+        rm -rf "$temp_dir"
     else
-        log_error "应用安装失败: ${package}"
-        return 1
+        # 使用 apt 源安装
+        # 更新 apt 源
+        log_info "更新软件包列表..."
+        sudo apt update || {
+            log_error "apt update 失败"
+            return 1
+        }
+        
+        # 安装应用
+        log_info "正在安装 ${package}..."
+        if sudo apt install -y "$package"; then
+            log_success "应用安装成功: ${package}"
+        else
+            log_error "应用安装失败: ${package}"
+            return 1
+        fi
+    fi
+    
+    # 创建 wrapper
+    create_wrapper "$short_name" "$package" || log_warning "创建 wrapper 失败，但应用已安装"
+    
+    # 提示用户
+    echo ""
+    log_success "${package} 已安装，可通过以下命令启动:"
+    echo -e "  ${GREEN}./tools/run.sh ${short_name}${NC}"
+    if is_in_container; then
+        echo -e "  或直接运行: ${GREEN}${short_name}${NC}"
+    else
+        echo -e "  或在容器内运行: ${GREEN}docker exec -it wine_container ${short_name}${NC}"
     fi
 }
 
@@ -247,9 +353,10 @@ show_help() {
     echo "    ./tools/run.sh <command> [arguments]"
     echo ""
     echo "命令:"
-    echo "    install <package> [short_name]  安装应用包"
-    echo "        - package: 完整包名（如 com.qq.weixin.work.deepin）"
+    echo "    install <package> [short_name] [-v|--version <version>]  安装应用包"
+    echo "        - package: 完整包名（如 com.qq.weixin.work.deepin）或简短名称（如 wxwork）"
     echo "        - short_name: 可选，简短名称（如 wxwork），如果不提供会提示输入"
+    echo "        - -v|--version: 可选，指定版本号（如 v4），将从映射表获取对应的 deb 包 URL"
     echo ""
     echo "    uninstall <package|short_name>  卸载应用"
     echo "        - 可以使用完整包名或简短名称"
@@ -264,6 +371,8 @@ show_help() {
     echo "示例:"
     echo "    ./tools/run.sh install com.qq.weixin.work.deepin wxwork"
     echo "    ./tools/run.sh install com.qq.weixin.work.deepin"
+    echo "    ./tools/run.sh install wxwork -v v4"
+    echo "    ./tools/run.sh install wxwork --version v4"
     echo "    ./tools/run.sh uninstall wxwork"
     echo "    ./tools/run.sh search wechat"
     echo "    ./tools/run.sh list"
@@ -282,7 +391,32 @@ main() {
             fi
             
             local package="$2"
-            local short_name="${3:-}"
+            local short_name=""
+            local version=""
+            local version_url=""
+            
+            # 解析参数，支持 -v 或 --version
+            shift 2
+            while [[ $# -gt 0 ]]; do
+                case "$1" in
+                    -v|--version)
+                        if [[ -z "${2:-}" ]]; then
+                            log_error "-v/--version 参数需要指定版本号"
+                            show_help
+                            exit 1
+                        fi
+                        version="$2"
+                        shift 2
+                        ;;
+                    *)
+                        # 如果还没有设置 short_name，则将其作为 short_name
+                        if [[ -z "$short_name" ]]; then
+                            short_name="$1"
+                        fi
+                        shift
+                        ;;
+                esac
+            done
             
             # 如果没有提供简短名称，尝试从映射表查找
             if [[ -z "$short_name" ]]; then
@@ -305,7 +439,7 @@ main() {
                 add_mapping "$short_name" "$package" "$description"
             fi
             
-            install_app "$package" "$short_name"
+            install_app "$package" "$short_name" "$version"
             ;;
             
         uninstall)
@@ -365,3 +499,4 @@ main() {
 
 # 执行主函数
 main "$@"
+

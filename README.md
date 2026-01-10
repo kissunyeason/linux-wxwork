@@ -11,6 +11,7 @@
 - 🐳 **完全容器化** - 基于 Docker 的隔离环境，不影响宿主机系统
 - 🚀 **一键运行** - 智能脚本自动处理环境配置和应用安装
 - 📦 **应用管理** - 支持安装、卸载、搜索、列出数百款应用
+- 🔖 **版本管理** - 支持安装指定版本的应用，版本映射可配置
 - 🎨 **图形界面支持** - 完整的 X11 转发，完美支持 GUI 应用
 - 💾 **数据持久化** - 应用数据自动保存到宿主机，容器重建不丢失
 - 🔧 **自动化配置** - 自动配置 Docker、Wine、输入法等环境
@@ -31,7 +32,7 @@
 ### 系统要求
 
 - **操作系统**: Linux ( Ubuntu 20.04 与 Ubuntu 22.04都测试过)
-- **Docker**: 20.10+ 
+- **Docker**: 20.10+ （未安装时会自动安装，需要 root 权限）
 - **内存**: 至少 4GB RAM
 - **磁盘空间**: 至少 5GB 可用空间
 - **图形环境**: X11 或 Wayland (需要图形界面支持)
@@ -54,7 +55,8 @@
    ```
    
    首次运行会自动执行：
-   - 检查并安装系统依赖（curl, jq, docker 等）
+   - 检查并安装系统依赖（curl, jq 等）
+   - **自动检测并安装 Docker**（如果未安装，需要 root 权限）
    - 配置 Docker 镜像源
    - 构建或拉取 Docker 镜像
    - 创建并启动容器
@@ -100,6 +102,19 @@
 # 示例
 ./tools/run.sh install com.qq.weixin.work.deepin wxwork
 ```
+
+**方式三：安装指定版本**
+```bash
+# 安装指定版本的应用
+./tools/run.sh install wxwork -v v4
+./tools/run.sh install wxwork --version v4
+
+# 运行应用时指定安装版本（如果未安装）
+./tools/run.sh wxwork -v v4
+./tools/run.sh wxwork --version v4
+```
+
+> **注意**：版本映射存储在 `mapping.json` 文件中，每个应用可以配置多个版本的下载地址。目前支持企业微信 v4 版本。
 
 ### 卸载应用
 
@@ -159,6 +174,7 @@ linux-wxwork/
 │   └── lib/                     # 内部实现文件（不对外暴露）
 │       ├── app.sh               # 应用管理脚本（安装/卸载/搜索/列出）
 │       ├── setup.sh             # 环境依赖检查和安装
+│       ├── install_docker.sh    # Docker 安装脚本（支持 amd64/arm64）
 │       └── functions.bash       # 公共函数库
 ├── wxwork-files/                 # 应用数据目录（自动创建）
 │   ├── [用户ID]/                 # 用户数据
@@ -168,7 +184,7 @@ linux-wxwork/
 │   │   └── WeDrive/             # 企业网盘
 │   ├── Global/                  # 全局配置
 │   └── Profiles/                # 用户配置文件
-├── mapping.json                 # 应用映射表（简短名称 ↔ 包名）
+├── mapping.json                 # 应用映射表（简短名称 ↔ 包名 + 版本映射）
 ├── docker-compose.yml           # Docker Compose 配置
 ├── Dockerfile                   # Docker 镜像构建文件
 └── README.md                    # 项目说明文档
@@ -281,7 +297,24 @@ echo $DISPLAY
 export DISPLAY=:0
 ```
 
-#### 2. 容器无法启动
+#### 2. Docker 未安装
+
+**问题**: 系统未安装 Docker
+
+**解决方案**:
+```bash
+# 方式一：自动安装（推荐）
+# 脚本会自动检测并安装 Docker，只需使用 sudo 运行
+sudo ./tools/run.sh wxwork
+
+# 方式二：手动安装
+# 使用项目提供的安装脚本
+sudo bash ./tools/lib/install_docker.sh
+```
+
+> **注意**: 如果使用普通用户运行脚本，检测到 Docker 未安装时会提示需要 root 权限。使用 `sudo` 运行脚本即可自动安装 Docker。
+
+#### 3. 容器无法启动
 
 **问题**: Docker 容器启动失败
 
@@ -297,7 +330,7 @@ sudo systemctl restart docker
 docker logs wine_container
 ```
 
-#### 3. 应用安装失败
+#### 4. 应用安装失败
 
 **问题**: 安装应用时出现错误
 

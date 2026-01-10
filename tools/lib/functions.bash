@@ -185,6 +185,31 @@ add_mapping() {
     fi
 }
 
+get_version_url() {
+    local short_name="$1"
+    local version="$2"
+    
+    if ! command -v jq >/dev/null 2>&1; then
+        log_error "需要 jq 命令来读取版本映射"
+        return 1
+    fi
+    
+    if [[ ! -f "$MAPPING_FILE" ]]; then
+        log_error "映射表文件不存在: $MAPPING_FILE"
+        return 1
+    fi
+    
+    # 从 mapping.json 中读取版本 URL
+    local url
+    url=$(jq -r ".[\"${short_name}\"].versions[\"${version}\"] // empty" "$MAPPING_FILE" 2>/dev/null)
+    
+    if [[ -z "$url" ]] || [[ "$url" == "null" ]]; then
+        return 1
+    fi
+    
+    echo "$url"
+}
+
 # ============================================================================
 # 应用安装检查函数
 # ============================================================================
@@ -341,23 +366,43 @@ check_docker() {
         return 0
     fi
     
-    log_warning "Docker 未安装或未运行，尝试安装..."
-    ensure_commands curl
+    log_warning "Docker 未安装或未运行，尝试自动安装..."
     
-    local install_script=$(mktemp)
-    if curl -fsSL https://get.docker.com -o "$install_script"; then
-        if sh "$install_script" --mirror=Aliyun || sh "$install_script"; then
-            rm -f "$install_script"
-            docker info >/dev/null 2>&1 || log_error "Docker 安装后仍无法使用"
+    # 检查是否有 root 权限
+    if [[ "${EUID}" -ne 0 ]]; then
+        log_error "Docker 安装需要 root 权限，请使用 sudo 运行"
+        log_info "或者手动运行: sudo bash ${SCRIPT_DIR}/install_docker.sh"
+        exit 1
+    fi
+    
+    # 使用项目提供的安装脚本
+    # install_docker.sh 在 tools/lib/ 目录下
+    local install_script="${SCRIPT_DIR}/install_docker.sh"
+    # 如果 SCRIPT_DIR 不是 lib 目录，尝试查找 lib 目录
+    if [[ ! -f "$install_script" ]] && [[ "$SCRIPT_DIR" != */lib ]]; then
+        install_script="$(dirname "$SCRIPT_DIR")/lib/install_docker.sh"
+    fi
+    
+    if [[ ! -f "$install_script" ]]; then
+        log_error "未找到 Docker 安装脚本: $install_script"
+        log_info "请确保 install_docker.sh 脚本存在于 tools/lib/ 目录"
+        exit 1
+    fi
+    
+    log_info "使用项目提供的 Docker 安装脚本: $install_script"
+    if bash "$install_script"; then
+        # 等待 Docker 服务启动
+        sleep 2
+        if docker info >/dev/null 2>&1; then
             log_success "Docker 安装完成"
+            return 0
         else
-            rm -f "$install_script"
-            log_error "Docker 安装失败"
+            log_error "Docker 安装后仍无法使用，请检查 Docker 服务状态"
+            log_info "尝试运行: sudo systemctl start docker"
             exit 1
         fi
     else
-        rm -f "$install_script"
-        log_error "无法下载 Docker 安装脚本"
+        log_error "Docker 安装失败"
         exit 1
     fi
 }
@@ -413,6 +458,12 @@ ensure_docker_environment() {
     fi
     
     log_info "检查 Docker 环境..."
+    
+    # 步骤0：检查并安装 Docker（如果需要）
+    if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
+        check_docker
+    fi
+    
     ensure_commands docker xhost xset
     
     # 步骤1：检查Docker环境配置

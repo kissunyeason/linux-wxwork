@@ -114,6 +114,7 @@ install_wine_environment() {
 install_app_in_container() {
     local package="$1"
     local short_name="$2"
+    local version="${3:-}"
     
     log_info "应用未安装，开始自动安装..."
     
@@ -124,8 +125,14 @@ install_app_in_container() {
     log_info "更新软件包列表..."
     docker exec "$CONTAINER_NAME" apt update >/dev/null 2>&1 || log_warning "apt update 失败，继续尝试安装"
     
+    # 构建安装命令参数
+    local install_args=("bash" "/workspace/tools/lib/app.sh" "install" "$package" "$short_name")
+    if [[ -n "$version" ]]; then
+        install_args+=("-v" "$version")
+    fi
+    
     # 直接使用 volume 挂载的脚本
-    docker exec "$CONTAINER_NAME" bash /workspace/tools/lib/app.sh install "$package" "$short_name" || {
+    docker exec "$CONTAINER_NAME" "${install_args[@]}" || {
         log_error "应用安装失败"
         return 1
     }
@@ -161,6 +168,7 @@ show_help() {
     echo ""
     echo "运行应用示例:"
     echo "    ./tools/run.sh wxwork         运行企业微信"
+    echo "    ./tools/run.sh wxwork -v v4   运行企业微信（如果未安装则安装 v4 版本）"
     echo "    ./tools/run.sh wechat         运行微信"
     echo "    ./tools/run.sh netease        运行网易云音乐"
     echo ""
@@ -171,7 +179,7 @@ show_help() {
     echo "应用管理命令:"
     echo "    ./tools/run.sh list           查看所有可用应用"
     echo "    ./tools/run.sh search <关键词> 搜索应用"
-    echo "    ./tools/run.sh install <包名> [简短名称] 安装应用"
+    echo "    ./tools/run.sh install <包名> [简短名称] [-v|--version <版本>] 安装应用"
     echo "    ./tools/run.sh uninstall <包名|简短名称> 卸载应用"
     echo ""
     log_info "如果应用未安装，运行时会自动安装"
@@ -228,6 +236,27 @@ main() {
     
     # 否则，将命令视为应用名称
     local app_name="$command"
+    local version=""
+    
+    # 解析版本参数（-v 或 --version）
+    shift
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -v|--version)
+                if [[ -z "${2:-}" ]]; then
+                    log_error "-v/--version 参数需要指定版本号"
+                    show_help
+                    exit 1
+                fi
+                version="$2"
+                shift 2
+                ;;
+            *)
+                # 其他参数忽略（可能是应用运行时的参数）
+                shift
+                ;;
+        esac
+    done
     
     # 查找完整包名
     local package=$(find_package_by_short_name "$app_name")
@@ -263,7 +292,7 @@ main() {
     
     # 检查容器内是否已安装
     if ! check_app_installed_in_container "$package"; then
-        install_app_in_container "$package" "$app_name"
+        install_app_in_container "$package" "$app_name" "$version"
     fi
     
     # 运行应用

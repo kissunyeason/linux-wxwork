@@ -44,9 +44,44 @@ check_docker_installed() {
         return 0
     fi
     
-    # Docker 安装比较复杂，这里只检查，不自动安装
-    log_warning "Docker 未安装或未运行"
-    return 1
+    # 如果 Docker 未安装，尝试自动安装
+    log_warning "Docker 未安装或未运行，尝试自动安装..."
+    
+    # 检查是否有 root 权限
+    if [[ "${EUID}" -ne 0 ]]; then
+        log_warning "Docker 安装需要 root 权限，请使用 sudo 运行"
+        log_info "或者手动运行: sudo bash ${SCRIPT_DIR}/install_docker.sh"
+        return 1
+    fi
+    
+    # 使用项目提供的安装脚本
+    # install_docker.sh 在 tools/lib/ 目录下
+    local install_script="${SCRIPT_DIR}/install_docker.sh"
+    # 如果 SCRIPT_DIR 不是 lib 目录，尝试查找 lib 目录
+    if [[ ! -f "$install_script" ]] && [[ "$SCRIPT_DIR" != */lib ]]; then
+        install_script="$(dirname "$SCRIPT_DIR")/lib/install_docker.sh"
+    fi
+    
+    if [[ -f "$install_script" ]]; then
+        log_info "使用项目提供的 Docker 安装脚本: $install_script"
+        if bash "$install_script"; then
+            # 等待 Docker 服务启动
+            sleep 2
+            if docker info >/dev/null 2>&1; then
+                log_success "Docker 安装完成"
+                return 0
+            else
+                log_warning "Docker 安装后仍无法使用，请检查 Docker 服务状态"
+                return 1
+            fi
+        else
+            log_warning "Docker 自动安装失败，请手动安装"
+            return 1
+        fi
+    else
+        log_warning "未找到 Docker 安装脚本，请手动安装 Docker"
+        return 1
+    fi
 }
 
 # 主函数
@@ -81,11 +116,14 @@ main() {
         log_success "所有必需依赖已安装"
     fi
     
-    # 检查可选依赖（仅检查，不强制安装）
+    # 检查可选依赖（Docker 会自动安装，其他仅检查）
     for pkg in "${OPTIONAL_PACKAGES[@]}"; do
         if ! command -v "$pkg" >/dev/null 2>&1; then
             if [[ "$pkg" == "docker" ]]; then
-                check_docker_installed || log_warning "Docker 未安装，某些功能可能无法使用"
+                # Docker 会自动安装（如果有 root 权限）
+                if ! check_docker_installed; then
+                    log_warning "Docker 未安装，某些功能可能无法使用"
+                fi
             else
                 log_warning "可选依赖未安装: $pkg（某些功能可能无法使用）"
             fi
