@@ -2,6 +2,39 @@
 
 本文档遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 规范。
 
+## [v2.0.1] - 2026-01-10
+
+### Changed
+- **目录结构重构**：将内部实现文件移动到 `tools/lib/` 目录
+  - `tools/app.sh` → `tools/lib/app.sh`
+  - `tools/functions.bash` → `tools/lib/functions.bash`
+  - `tools/setup.sh` → `tools/lib/setup.sh`
+- **统一入口**：对外只暴露 `tools/run.sh` 和 `tools/run_wxwork.sh`
+  - 所有应用管理命令通过 `./tools/run.sh` 统一调用
+  - 不再暴露 `lib` 目录，简化用户使用
+
+### Added
+- **容器管理功能**：在 `run.sh` 中添加容器管理命令
+  - `./tools/run.sh stop` - 停止容器
+  - `./tools/run.sh stop --clear/-c` - 停止并删除容器和镜像
+- **命令转发**：`run.sh` 现在支持转发所有应用管理命令
+  - `list` - 查看所有可用应用
+  - `search` - 搜索应用
+  - `install` - 安装应用
+  - `uninstall` - 卸载应用
+
+### Fixed
+- 修复 `mapping.json` 路径计算错误（lib 目录下的脚本现在能正确找到项目根目录）
+- 修复所有帮助信息和提示信息中的路径暴露问题
+- 统一所有用户提示使用 `./tools/run.sh` 而不是 `./tools/lib/app.sh`
+
+### Technical Improvements
+- 改进路径计算逻辑，支持从不同目录层级正确计算项目根目录
+- 优化代码结构，内部实现与对外接口分离
+- 提升用户体验，简化命令使用方式
+
+---
+
 ## [v2.0.0] - 2026-01-10
 
 ### Added

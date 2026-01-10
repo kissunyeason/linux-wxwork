@@ -7,7 +7,8 @@ set -euo pipefail
 
 # 获取脚本目录并加载公共函数
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WS_DIR="$(dirname "$SCRIPT_DIR")"
+# WS_DIR 应该是项目根目录，lib 目录的父目录的父目录
+WS_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
 MAPPING_FILE="${WS_DIR}/mapping.json"
 SEARCH_URL="https://deepin-wine.i-m.dev/"
 
@@ -60,7 +61,7 @@ install_app_in_container() {
     docker exec "$CONTAINER_NAME" apt update >/dev/null 2>&1 || log_warning "apt update 失败，继续尝试安装"
     
     # 直接使用 volume 挂载的脚本
-    docker exec "$CONTAINER_NAME" bash /workspace/tools/app.sh install "$package" "$short_name" || {
+    docker exec "$CONTAINER_NAME" bash /workspace/tools/lib/app.sh install "$package" "$short_name" || {
         log_error "应用安装失败"
         return 1
     }
@@ -213,7 +214,7 @@ search_app() {
     echo ""
     if [[ $count -gt 0 ]]; then
         log_info "找到 $count 个匹配的应用"
-        log_info "使用以下命令安装: ./tools/app.sh install <包名>"
+        log_info "使用以下命令安装: ./tools/run.sh install <包名>"
     else
         log_warning "未找到匹配的应用，请尝试其他关键词"
     fi
@@ -234,7 +235,7 @@ list_apps() {
     done
     
     echo ""
-    log_info "使用以下命令安装: ./tools/app.sh install <包名>"
+    log_info "使用以下命令安装: ./tools/run.sh install <包名>"
     log_info "或使用简短名称: ./tools/run.sh <简短名称> (会自动安装)"
 }
 
@@ -243,7 +244,7 @@ show_help() {
     log_info "Deepin-Wine 应用管理工具"
     echo ""
     echo "用法:"
-    echo "    ./tools/app.sh <command> [arguments]"
+    echo "    ./tools/run.sh <command> [arguments]"
     echo ""
     echo "命令:"
     echo "    install <package> [short_name]  安装应用包"
@@ -261,11 +262,11 @@ show_help() {
     echo "    help                             显示此帮助信息"
     echo ""
     echo "示例:"
-    echo "    ./tools/app.sh install com.qq.weixin.work.deepin wxwork"
-    echo "    ./tools/app.sh install com.qq.weixin.work.deepin"
-    echo "    ./tools/app.sh uninstall wxwork"
-    echo "    ./tools/app.sh search wechat"
-    echo "    ./tools/app.sh list"
+    echo "    ./tools/run.sh install com.qq.weixin.work.deepin wxwork"
+    echo "    ./tools/run.sh install com.qq.weixin.work.deepin"
+    echo "    ./tools/run.sh uninstall wxwork"
+    echo "    ./tools/run.sh search wechat"
+    echo "    ./tools/run.sh list"
 }
 
 # 主函数

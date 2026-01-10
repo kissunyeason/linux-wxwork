@@ -19,13 +19,19 @@ if [[ -z "${SCRIPT_DIR:-}" ]]; then
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 if [[ -z "${WS_DIR:-}" ]]; then
-    WS_DIR="$(dirname "$SCRIPT_DIR")"
+    # 如果 SCRIPT_DIR 在 lib 目录下，需要向上两级到达项目根目录
+    # 如果 SCRIPT_DIR 在 tools 目录下，只需要向上一级
+    if [[ "$SCRIPT_DIR" == */lib ]]; then
+        WS_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
+    else
+        WS_DIR="$(dirname "$SCRIPT_DIR")"
+    fi
 fi
 if [[ -z "${MAPPING_FILE:-}" ]]; then
     MAPPING_FILE="${WS_DIR}/mapping.json"
 fi
 if [[ -z "${APP_SCRIPT:-}" ]]; then
-    APP_SCRIPT="${SCRIPT_DIR}/app.sh"
+    APP_SCRIPT="${SCRIPT_DIR}/lib/app.sh"
 fi
 if [[ -z "${CONTAINER_NAME:-}" ]]; then
     CONTAINER_NAME="wine_container"

@@ -62,8 +62,8 @@
 
 3. **查看可用应用**
    ```bash
-   ./tools/app.sh list      # 列出所有支持的应用
-   ./tools/app.sh search <关键词>  # 搜索应用
+   ./tools/run.sh list      # 列出所有支持的应用
+   ./tools/run.sh search <关键词>  # 搜索应用
    ```
 
 ### 💡 其他选择
@@ -92,23 +92,23 @@
 ```
 例如：`./tools/run.sh wxwork` 会自动安装并运行企业微信
 
-**方式二：使用应用管理脚本**
+**方式二：使用应用管理命令**
 ```bash
 # 安装应用
-./tools/app.sh install <完整包名> [简短名称]
+./tools/run.sh install <完整包名> [简短名称]
 
 # 示例
-./tools/app.sh install com.qq.weixin.work.deepin wxwork
+./tools/run.sh install com.qq.weixin.work.deepin wxwork
 ```
 
 ### 卸载应用
 
 ```bash
-./tools/app.sh uninstall <包名或简短名称>
+./tools/run.sh uninstall <包名或简短名称>
 
 # 示例
-./tools/app.sh uninstall wxwork
-./tools/app.sh uninstall com.qq.weixin.work.deepin
+./tools/run.sh uninstall wxwork
+./tools/run.sh uninstall com.qq.weixin.work.deepin
 ```
 
 ### 搜索应用
@@ -116,8 +116,8 @@
 从 [Deepin-Wine 应用商店](https://deepin-wine.i-m.dev/) 搜索可用应用：
 
 ```bash
-./tools/app.sh search wechat    # 搜索包含 "wechat" 的应用
-./tools/app.sh search 音乐      # 搜索音乐相关应用
+./tools/run.sh search wechat    # 搜索包含 "wechat" 的应用
+./tools/run.sh search 音乐      # 搜索音乐相关应用
 ```
 
 ### 列出所有应用
@@ -125,13 +125,21 @@
 查看项目中已配置的热门应用列表：
 
 ```bash
-./tools/app.sh list
+./tools/run.sh list
 ```
 
-### 应用管理命令帮助
+### 容器管理
 
 ```bash
-./tools/app.sh help
+./tools/run.sh stop            # 停止容器
+./tools/run.sh stop --clear    # 停止并删除容器和镜像
+```
+
+### 查看帮助信息
+
+```bash
+./tools/run.sh                 # 显示帮助信息
+./tools/run.sh help            # 显示帮助信息
 ```
 
 ## 📁 项目结构
@@ -146,11 +154,12 @@ linux-wxwork/
 │   ├── install_wxwork.sh        # 企业微信安装（示例）
 │   └── setup_env.sh             # 环境设置
 ├── tools/                        # 工具脚本
-│   ├── app.sh                   # 应用管理脚本（安装/卸载/搜索/列出）
-│   ├── run.sh                   # 统一运行脚本（自动安装+运行）
+│   ├── run.sh                   # 统一运行脚本（运行应用+容器管理+应用管理）
 │   ├── run_wxwork.sh            # 企业微信快捷脚本（兼容性）
-│   ├── setup.sh                 # 环境依赖检查和安装
-│   └── functions.bash           # 公共函数库
+│   └── lib/                     # 内部实现文件（不对外暴露）
+│       ├── app.sh               # 应用管理脚本（安装/卸载/搜索/列出）
+│       ├── setup.sh             # 环境依赖检查和安装
+│       └── functions.bash       # 公共函数库
 ├── wxwork-files/                 # 应用数据目录（自动创建）
 │   ├── [用户ID]/                 # 用户数据
 │   │   ├── Data/                # 应用数据
@@ -203,7 +212,7 @@ linux-wxwork/
 ./tools/run.sh wxwork
 
 # 方式二：使用完整命令
-./tools/app.sh install com.qq.weixin.work.deepin wxwork
+./tools/run.sh install com.qq.weixin.work.deepin wxwork
 ./tools/run.sh wxwork
 ```
 
@@ -223,24 +232,33 @@ linux-wxwork/
 
 ```bash
 # 1. 搜索应用
-./tools/app.sh search 音乐
+./tools/run.sh search 音乐
 
 # 2. 查看搜索结果，找到包名
 # 3. 安装应用
-./tools/app.sh install <包名> <简短名称>
+./tools/run.sh install <包名> <简短名称>
 
 # 4. 运行应用
 ./tools/run.sh <简短名称>
 ```
 
+### 容器管理
+
+```bash
+# 停止容器
+./tools/run.sh stop
+
+# 停止并删除容器和镜像
+./tools/run.sh stop --clear
+```
+
 ### 查看帮助信息
 
 ```bash
-# 应用管理帮助
-./tools/app.sh help
-
-# 运行脚本帮助
+# 显示帮助信息
 ./tools/run.sh
+# 或
+./tools/run.sh help
 ```
 
 ## 🔍 故障排除
@@ -344,10 +362,11 @@ cat .cursor/debug.log
 如果遇到无法解决的问题，可以重置环境：
 
 ```bash
-# 停止并删除容器
-docker compose down
+# 停止并删除容器和镜像（推荐）
+./tools/run.sh stop --clear
 
-# 删除镜像（可选）
+# 或使用传统方式
+docker compose down
 docker rmi zwhy2025/wine-docker:base
 
 # 清理数据（谨慎操作，会删除所有应用数据）
@@ -382,12 +401,12 @@ ps aux | grep -E "wxwork|wechat|netease"
 
 1. **查找应用包名**
    ```bash
-   ./tools/app.sh search <关键词>
+   ./tools/run.sh search <关键词>
    ```
 
 2. **安装应用**
    ```bash
-   ./tools/app.sh install <包名> <简短名称>
+   ./tools/run.sh install <包名> <简短名称>
    ```
 
 3. **添加到映射表** (可选)
