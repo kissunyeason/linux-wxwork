@@ -1,24 +1,13 @@
 services:
-  wechat:
+  wine_container:
     image: zwhy2025/wine-docker:base
     container_name: wine_container
     network_mode: host
-    volumes:
-      - .:/wine
-      - ./wxwork-files:/root/.deepinwine/Deepin-WXWork
     environment:
       - DISPLAY=$DISPLAY
-      - QT_IM_MODULE=fcitx
-      - XMODIFIERS=@im=fcitx
-      - GTK_IM_MODULE=fcitx
-    entrypoint:
-      - /bin/bash
-      - -c
-      - |
-        # Fedora 43 专属补丁：解决黑边、透明和焦点问题
-        wine reg add "HKEY_CURRENT_USER\Software\Wine\X11 Driver" /v Decorated /t REG_SZ /d n /f
-        wine reg add "HKEY_CURRENT_USER\Software\Wine\X11 Driver" /v Compositing /t REG_SZ /d y /f
-        wine reg add "HKEY_CURRENT_USER\Software\Wine\X11 Driver" /v UseTakeFocus /t REG_SZ /d n /f
-        # 启动应用
-        /usr/bin/wxwork &
-        tail -f /dev/null
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./wine-home:/home/wechat
+    privileged: true
+    restart: unless-stopped
