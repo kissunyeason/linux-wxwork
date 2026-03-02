@@ -6,8 +6,19 @@ services:
     environment:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
+      # IBus 环境变量注入
+      - XMODIFIERS=@im=ibus
+      - GTK_IM_MODULE=ibus
+      - QT_IM_MODULE=ibus
+      - IBUS_ADDRESS=unix:tmpdir=/tmp/ibus
+      - WECHAT_SKIP_CHECK=1
+      - GDK_SCALE=1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ./wine-home:/home/wechat
+      # 核心：挂载 IBus 运行时 Socket (Fedora 默认路径)
+      - /run/user/1000/ibus:/run/user/1000/ibus
+      - /tmp/ibus:/tmp/ibus
+      - /home/kissuny/.config/ibus:/home/wechat/.config/ibus:ro
     privileged: true
     restart: unless-stopped
