@@ -4,9 +4,19 @@
 
 ## 🚀 快速开始
 
-### 1. 配置 Docker 代理 (必备)
-若拉取镜像超时，请配置 Docker 守护进程代理。编辑或创建以下文件：
-`/etc/systemd/system/docker.service.d/http-proxy.conf`
+### 1. 启动项目 (自动安装依赖)
+直接运行脚本，它会自动配置 DNF5 仓库并安装 Docker 及 X11 依赖：
+```bash
+git clone https://github.com/kissunyeason/linux-wxwork.git
+cd linux-wxwork
+chmod +x launcher.sh
+sudo ./launcher.sh
+```
+
+### 2. 配置 Docker 代理 (若拉取镜像超时)
+**注意：** 只有在脚本安装完 Docker 后，才能执行以下配置。若 `docker compose up` 出现 `i/o timeout`，请配置代理：
+
+编辑或创建文件：`/etc/systemd/system/docker.service.d/http-proxy.conf`
 
 内容模板：
 ```ini
@@ -15,22 +25,16 @@ Environment="HTTP_PROXY=http://您的代理服务器IP:端口"
 Environment="HTTPS_PROXY=http://您的代理服务器IP:端口"
 ```
 
-完成后执行：
+完成后激活配置：
 ```bash
 sudo systemctl daemon-reload && sudo systemctl restart docker
-```
-
-### 2. 启动项目
-```bash
-git clone https://github.com/kissunyeason/linux-wxwork.git
-cd linux-wxwork
-chmod +x launcher.sh
-./launcher.sh
+# 然后重新运行脚本
+sudo ./launcher.sh
 ```
 
 ## 🛠️ 功能特性
 - **DNF5 兼容**：自动配置 Docker 官方 Repo。
-- **依赖自愈**：按需自动安装 X11 相关组件。
+- **依赖自愈**：按路径 `/usr/bin/xset` 自动安装组件。
 - **视觉优化**：自动消除 Wine 窗口黑边。
 
 ## 🌟 特别致谢
