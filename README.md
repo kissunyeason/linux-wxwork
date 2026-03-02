@@ -1,17 +1,26 @@
 # 企业微信 Docker 版 (Fedora 43 适配版)
 
-本项目专为 **Fedora 43** 深度优化，解决了 DNF5 环境下的依赖安装、Docker 仓库配置及 Wine 窗口黑边等兼容性问题。
+本项目专为 **Fedora 43 (DNF5)** 优化，解决了依赖冲突、官方 Docker 仓库配置及 Wine UI 兼容性问题。
 
-## 🚀 快速开始 (Fedora 43)
+## 🚀 快速开始
 
-### 1. 配置系统代理 (推荐)
-由于镜像约 2GB，建议先配置 DNF 代理以加速下载：
-```bash
-sudo bash -c 'echo "proxy=http://10.0.2.2:20122" >> /etc/dnf/dnf.conf'
+### 1. 配置 Docker 代理 (必备)
+若拉取镜像超时，请配置 Docker 守护进程代理。编辑或创建以下文件：
+`/etc/systemd/system/docker.service.d/http-proxy.conf`
+
+内容模板：
+```ini
+[Service]
+Environment="HTTP_PROXY=http://您的代理服务器IP:端口"
+Environment="HTTPS_PROXY=http://您的代理服务器IP:端口"
 ```
 
-### 2. 一键克隆与启动
-无需手动安装 Docker，脚本将全自动处理依赖并启动：
+完成后执行：
+```bash
+sudo systemctl daemon-reload && sudo systemctl restart docker
+```
+
+### 2. 启动项目
 ```bash
 git clone https://github.com/kissunyeason/linux-wxwork.git
 cd linux-wxwork
@@ -19,15 +28,10 @@ chmod +x launcher.sh
 ./launcher.sh
 ```
 
-## 🛠️ 脚本核心功能
-- **DNF5 自动适配**：使用 `addrepo` 命令自动配置 Docker 官方源。
-- **依赖自动补全**：识别并安装 Fedora 43 中的 `xorg-x11-utils` (包含 xset)。
-- **UI 视觉优化**：自动注入注册表补丁，消除 Wine 窗口黑边。
-- **权限智能处理**：检测 Docker 权限，若不足会自动引导使用 `sudo`运行。
-
-## ⚠️ 注意事项
-- **首次安装 Docker**：安装完成后建议重启系统使权限生效。
-- **镜像版本**：目前强制指向 `zwhy2025/wine-docker:base` 镜像。
+## 🛠️ 功能特性
+- **DNF5 兼容**：自动配置 Docker 官方 Repo。
+- **依赖自愈**：按需自动安装 X11 相关组件。
+- **视觉优化**：自动消除 Wine 窗口黑边。
 
 ## 🌟 特别致谢
-本项目核心镜像能力源自 [zwhy2025/wine-docker](https://github.com/zwhy2025/wine-docker)，感谢原作者在 Wine-Docker 封装上所做的杰出工作！
+本项目核心镜像能力源自 [zwhy2025/wine-docker](https://github.com/zwhy2025/wine-docker)。

@@ -1,1 +1,4 @@
-wxwork-files/
+wine-home/
+FETCH_HEAD
+.DS_Store
+*.log
