@@ -1,6 +1,6 @@
 services:
   wechat:
-    image: zwhy2025/wine-docker:latest
+    image: zwhy2025/wine-docker:base
     container_name: wine_container
     network_mode: host
     volumes:
