@@ -1,16 +1,32 @@
-# Linux-WXWork for Fedora 43 (Optimized)
+cat <<EOF > README.md
+# Linux 企业微信 (Fedora 43 适配版)
 
-本项目是针对 **Fedora 43** 深度优化的企业微信 Docker 运行方案。
+本项目专为 Fedora 43 设计，解决了 DNF5 环境下的依赖冲突、Docker 安装及 Wine 窗口黑边问题。
 
-## 🙏 鸣谢 (Credits)
-核心基于 **[Zwhy2025/linux-wxwork](https://github.com/Zwhy2025/linux-wxwork)**。感谢原作者提供的 Wine 环境，本项目针对 Fedora 43 进行了补丁增强。
+## 🚀 快速开始 (Fedora 43)
 
-## 🚀 极速启动
-1. `chmod +x launcher.sh`
-2. `./launcher.sh`
-3. 以后直接从系统菜单搜索 **“企业微信”** 启动。
+### 1. 配置系统代理 (推荐)
+由于需要拉取约 2GB 的 Docker 镜像，建议先配置 DNF 代理：
+\`\`\`bash
+sudo bash -c 'echo "proxy=http://10.0.2.2:20122" >> /etc/dnf/dnf.conf'
+\`\`\`
 
-## ✨ Fedora 43 优化项
-- 自动修复窗口黑边
-- 优化 Wayland 下的焦点切换
-- 简化了复杂的环境变量，一键直达
+### 2. 克隆与启动
+无需手动安装 Docker，脚本将自动处理所有依赖：
+\`\`\`bash
+git clone https://github.com/kissunyeason/linux-wxwork.git
+cd linux-wxwork
+chmod +x launcher.sh
+./launcher.sh
+\`\`\`
+
+## 🛠️ 脚本功能说明
+- **自动适配 DNF5**：使用 \`addrepo\` 命令配置 Docker 官方源。
+- **依赖补全**：自动安装 \`xorg-x11-utils\` 以支持 X11 授权。
+- **UI 优化**：自动注入 Registry 补丁，消除 Wine 窗口的厚重黑边。
+- **权限自愈**：检测到当前用户不在 Docker 组时，会自动使用 \`sudo\` 执行。
+
+## ⚠️ 注意事项
+- **首次启动**：安装 Docker 后，建议重启系统以使免密码权限生效。
+- **镜像版本**：目前强制使用 \`zwhy2025/wine-docker:base\` 镜像。
+EOF
